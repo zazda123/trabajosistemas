@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Maestría en Linux - Usuarios, Grupos y Permisos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .permission-bit-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .permission-bit {
+            font-family: monospace;
+            font-size: 1.25rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            cursor: help;
+        }
+        .permission-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .permission-bit-wrapper:hover .permission-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #7a5195, #ef5675);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            font-weight: bold;
+            min-height: 100px;
+        }
+        .flow-arrow {
+            width: 2px;
+            height: 30px;
+            background-color: #94a3b8;
+            margin: 0.5rem auto;
+            position: relative;
+        }
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%) rotate(45deg);
+            width: 8px;
+            height: 8px;
+            border-bottom: 2px solid #94a3b8;
+            border-right: 2px solid #94a3b8;
+        }
+        @media (min-width: 768px) {
+            .flow-arrow-horizontal {
+                width: 30px;
+                height: 2px;
+                background-color: #94a3b8;
+                margin: 0 auto;
+                position: relative;
+            }
+            .flow-arrow-horizontal::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 100%;
+                transform: translateX(-50%) translateY(-50%) rotate(45deg);
+                width: 8px;
+                height: 8px;
+                border-top: 2px solid #94a3b8;
+                border-right: 2px solid #94a3b8;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-black mb-2 gradient-text">Maestría en Linux</h1>
+            <p class="text-xl md:text-2xl text-gray-600">Una Guía Visual para Administrar Usuarios, Grupos y Permisos</p>
+        </header>
+
+        <main class="space-y-12">
+            
+            <section id="usuarios" class="card animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-6 text-center text-[#003f5c]">1. Los Pilares del Sistema: Usuarios</h2>
+                <div class="text-center mb-8">
+                    <p class="max-w-3xl mx-auto text-gray-600">En Linux, un usuario es cualquier entidad que puede ejecutar tareas. La correcta gestión de usuarios es el primer paso para un sistema seguro y organizado. Existen tres tipos principales:</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="border-2 border-[#7a5195] p-6 rounded-lg">
+                        <div class="text-5xl mb-3">👑</div>
+                        <h3 class="text-xl font-bold text-[#7a5195]">Root (Superusuario)</h3>
+                        <p class="text-gray-600 mt-2">El administrador con acceso total. Puede instalar, borrar y modificar cualquier cosa en el sistema.</p>
+                    </div>
+                    <div class="border-2 border-[#ef5675] p-6 rounded-lg">
+                        <div class="text-5xl mb-3">👤</div>
+                        <h3 class="text-xl font-bold text-[#ef5675]">Comunes</h3>
+                        <p class="text-gray-600 mt-2">Usuarios con permisos limitados. Usan `sudo` para realizar tareas administrativas de forma controlada.</p>
+                    </div>
+                    <div class="border-2 border-[#ffa600] p-6 rounded-lg">
+                        <div class="text-5xl mb-3">⚙️</div>
+                        <h3 class="text-xl font-bold text-[#ffa600]">Del Sistema</h3>
+                        <p class="text-gray-600 mt-2">No son personas. Son cuentas usadas por servicios y aplicaciones para funcionar de forma aislada y segura.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="grupos" class="card animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-6 text-center text-[#003f5c]">2. Colaboración y Control: Grupos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-gray-600 mb-4">Los grupos son una forma eficiente de gestionar permisos para múltiples usuarios a la vez. En lugar de asignar permisos uno por uno, los asignas a un grupo, y todos sus miembros los heredan.</p>
+                        <p class="text-gray-600">Cada usuario tiene un <span class="font-bold text-[#7a5195]">grupo principal</span> (el que se asigna por defecto a sus nuevos archivos) y puede pertenecer a múltiples <span class="font-bold text-[#ef5675]">grupos secundarios</span> para acceder a otros recursos compartidos.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="groupChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="permisos-estructura" class="card animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-6 text-center text-[#003f5c]">3. El ADN de la Seguridad: Estructura de Permisos</h2>
+                <div class="text-center">
+                    <p class="max-w-3xl mx-auto text-gray-600 mb-8">Cada archivo y directorio tiene 10 caracteres que definen sus permisos. Así es como se leen:</p>
+                    <div class="flex flex-wrap justify-center items-center gap-2 bg-gray-800 text-white p-4 rounded-lg">
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-gray-600">d</div>
+                            <div class="permission-tooltip">Tipo de archivo/directorio (d=directorio, -=archivo)</div>
+                            <div class="text-xs mt-1">Tipo</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-[#7a5195]">r</div>
+                            <div class="permission-tooltip">Permiso de Lectura para el Usuario (Propietario)</div>
+                            <div class="text-xs mt-1">Leer</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-[#7a5195]">w</div>
+                            <div class="permission-tooltip">Permiso de Escritura para el Usuario (Propietario)</div>
+                            <div class="text-xs mt-1">Escribir</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-[#7a5195]">x</div>
+                            <div class="permission-tooltip">Permiso de Ejecución para el Usuario (Propietario)</div>
+                            <div class="text-xs mt-1">Ejecutar</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-[#ef5675]">r</div>
+                            <div class="permission-tooltip">Permiso de Lectura para el Grupo</div>
+                            <div class="text-xs mt-1">Leer</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-gray-500">-</div>
+                            <div class="permission-tooltip">Permiso no concedido</div>
+                             <div class="text-xs mt-1"></div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-[#ef5675]">x</div>
+                            <div class="permission-tooltip">Permiso de Ejecución para el Grupo</div>
+                            <div class="text-xs mt-1">Ejecutar</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                             <div class="permission-bit bg-[#ffa600]">r</div>
+                            <div class="permission-tooltip">Permiso de Lectura para Otros</div>
+                            <div class="text-xs mt-1">Leer</div>
+                        </div>
+                        <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-gray-500">-</div>
+                            <div class="permission-tooltip">Permiso no concedido</div>
+                            <div class="text-xs mt-1"></div>
+                        </div>
+                         <div class="permission-bit-wrapper">
+                            <div class="permission-bit bg-gray-500">-</div>
+                            <div class="permission-tooltip">Permiso no concedido</div>
+                            <div class="text-xs mt-1"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center gap-8 mt-2 text-sm font-bold">
+                        <div class="text-center">
+                            <span class="text-gray-500">Pos 1</span>
+                        </div>
+                        <div class="text-center text-[#7a5195]">
+                            <span>Usuario (Dueño)</span>
+                        </div>
+                         <div class="text-center text-[#ef5675]">
+                            <span>Grupo</span>
+                        </div>
+                         <div class="text-center text-[#ffa600]">
+                            <span>Otros</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="permisos-octal" class="card animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-6 text-center text-[#003f5c]">4. La Magia del Octal: Cambiando Permisos con `chmod`</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-gray-600 mb-4">La notación octal es una forma rápida de asignar permisos. Cada acción tiene un valor numérico. Sumando estos valores, obtienes un dígito que representa una combinación de permisos.</p>
+                        <ul class="list-none space-y-2">
+                            <li class="flex items-center"><span class="text-2xl mr-3">📖</span> <b>4: Lectura (r)</b></li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">✍️</span> <b>2: Escritura (w)</b></li>
+                            <li class="flex items-center"><span class="text-2xl mr-3">⚡️</span> <b>1: Ejecución (x)</b></li>
+                        </ul>
+                         <p class="text-gray-600 mt-4">Usas un número de tres dígitos (`chmod 755`), donde cada dígito corresponde a Usuario, Grupo y Otros.</p>
+                         <div class="mt-8 p-4 bg-gray-100 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4 text-[#003f5c]">Simulador Octal de Permisos</h3>
+                            <div class="flex flex-col md:flex-row gap-4 items-center mb-4">
+                                <div class="flex flex-col">
+                                    <label for="octal-user" class="text-sm font-semibold text-gray-700">Usuario:</label>
+                                    <input type="number" id="octal-user" min="0" max="7" value="7" class="w-20 p-2 border border-gray-300 rounded-md text-center">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="octal-group" class="text-sm font-semibold text-gray-700">Grupo:</label>
+                                    <input type="number" id="octal-group" min="0" max="7" value="5" class="w-20 p-2 border border-gray-300 rounded-md text-center">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="octal-others" class="text-sm font-semibold text-gray-700">Otros:</label>
+                                    <input type="number" id="octal-others" min="0" max="7" value="5" class="w-20 p-2 border border-gray-300 rounded-md text-center">
+                                </div>
+                                <button id="calculate-permissions" class="bg-[#7a5195] text-white px-6 py-2 rounded-md hover:bg-[#6c478a] transition-colors mt-4 md:mt-0">Calcular Permisos</button>
+                            </div>
+                            <div id="permission-results" class="mt-4 text-left">
+                                <p class="text-lg font-bold text-[#ef5675]">Permisos Resultantes: <span id="symbolic-permissions" class="font-mono text-gray-800">-rwxr-xr-x</span></p>
+                                <p class="text-gray-700 mt-2"><span id="permission-description">El propietario tiene lectura, escritura y ejecución; el grupo y otros tienen lectura y ejecución.</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="permissionSetsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="comandos" class="card animate-on-scroll">
+                <h2 class="text-3xl font-bold mb-6 text-center text-[#003f5c]">5. La Caja de Herramientas del Administrador</h2>
+                <p class="text-center max-w-3xl mx-auto text-gray-600 mb-8">Estos son los comandos esenciales para la gestión diaria de la seguridad en tu sistema.</p>
+                <div class="overflow-x-auto mb-8">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-4 font-bold text-[#003f5c] border-b-2 border-gray-200">Comando</th>
+                                <th class="p-4 font-bold text-[#003f5c] border-b-2 border-gray-200">Propósito</th>
+                                <th class="p-4 font-bold text-[#003f5c] border-b-2 border-gray-200">Ejemplo de Uso</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="p-4 font-mono font-bold">useradd</td>
+                                <td class="p-4">Crea un nuevo usuario.</td>
+                                <td class="p-4 font-mono">`useradd -m -g users ana`</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4 font-mono font-bold">passwd</td>
+                                <td class="p-4">Asigna o cambia la contraseña de un usuario.</td>
+                                <td class="p-4 font-mono">`passwd ana`</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4 font-mono font-bold">usermod</td>
+                                <td class="p-4">Modifica los datos de un usuario existente.</td>
+                                <td class="p-4 font-mono">`usermod -aG projects ana`</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-mono font-bold">groupadd</td>
+                                <td class="p-4">Crea un nuevo grupo.</td>
+                                <td class="p-4 font-mono">`groupadd developers`</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4 font-mono font-bold">chmod</td>
+                                <td class="p-4">Cambia los permisos de un archivo o directorio.</td>
+                                <td class="p-4 font-mono">`chmod 750 script.sh`</td>
+                            </tr>
+                             <tr>
+                                <td class="p-4 font-mono font-bold">chage</td>
+                                <td class="p-4">Gestiona las políticas de expiración de contraseñas.</td>
+                                <td class="p-4 font-mono">`chage -M 90 ana`</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="text-2xl font-bold mb-4 text-center text-[#003f5c]">Flujo de Administración: Crear Usuario y Asignar Permisos</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+                    <div class="flow-step bg-[#7a5195] text-white">
+                        <span class="text-4xl">➕</span>
+                        <p>Crear Usuario</p>
+                        <span class="font-mono text-sm">useradd</span>
+                    </div>
+                    <div class="flow-arrow md:hidden"></div>
+                    <div class="hidden md:block flow-arrow-horizontal"></div>
+                    <div class="flow-step bg-[#ef5675] text-white">
+                        <span class="text-4xl">🔑</span>
+                        <p>Asignar Contraseña</p>
+                        <span class="font-mono text-sm">passwd</span>
+                    </div>
+                    <div class="flow-arrow md:hidden"></div>
+                    <div class="hidden md:block flow-arrow-horizontal"></div>
+                    <div class="flow-step bg-[#ffa600] text-white">
+                        <span class="text-4xl">👥</span>
+                        <p>Añadir a Grupo</p>
+                        <span class="font-mono text-sm">usermod -aG</span>
+                    </div>
+                    <div class="flow-arrow md:hidden"></div>
+                    <div class="hidden md:block flow-arrow-horizontal"></div>
+                    <div class="flow-step bg-[#003f5c] text-white">
+                        <span class="text-4xl">🛡️</span>
+                        <p>Ajustar Permisos de Archivo</p>
+                        <span class="font-mono text-sm">chmod</span>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-300">
+            <p class="text-gray-500">Infografía creada para demostrar los conceptos de la Unidad III.</p>
+        </footer>
+    </div>
+
+    <script>
+        const colorPalette = {
+            darkBlue: '#003f5c',
+            purple: '#7a5195',
+            pink: '#ef5675',
+            orange: '#ffa600',
+            lightGrey: '#f0f2f5',
+            white: '#ffffff'
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const wrapLabel = (label, maxLength = 16) => {
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        };
+
+        const ctxGroup = document.getElementById('groupChart').getContext('2d');
+        new Chart(ctxGroup, {
+            type: 'doughnut',
+            data: {
+                labels: ['Grupo Principal', 'Grupos Secundarios'],
+                datasets: [{
+                    label: 'Pertenencia a Grupos',
+                    data: [1, 3],
+                    backgroundColor: [
+                        colorPalette.purple,
+                        colorPalette.pink
+                    ],
+                    borderColor: colorPalette.white,
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            color: colorPalette.darkBlue
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Pertenencia de un Usuario a Grupos',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                         color: colorPalette.darkBlue
+                    },
+                    tooltip: {
+                        callbacks: {
+                           title: tooltipTitleCallback
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+       
+        function octalToSymbolic(octal) {
+            const r = (octal & 4) ? 'r' : '-';
+            const w = (octal & 2) ? 'w' : '-';
+            const x = (octal & 1) ? 'x' : '-';
+            return `${r}${w}${x}`;
+        }
+
+       
+        function getOctalDescription(octal) {
+            const permissions = [];
+            if (octal & 4) permissions.push('lectura');
+            if (octal & 2) permissions.push('escritura');
+            if (octal & 1) permissions.push('ejecución');
+
+            if (permissions.length === 0) return 'ningún permiso';
+            if (permissions.length === 3) return 'lectura, escritura y ejecución (control total)';
+            return permissions.join(' y ');
+        }
+
+        
+        function updatePermissions() {
+            const userOctal = parseInt(document.getElementById('octal-user').value);
+            const groupOctal = parseInt(document.getElementById('octal-group').value);
+            const othersOctal = parseInt(document.getElementById('octal-others').value);
+
+            const symbolicUser = octalToSymbolic(userOctal);
+            const symbolicGroup = octalToSymbolic(groupOctal);
+            const symbolicOthers = octalToSymbolic(othersOctal);
+
+            const symbolicFull = `-${symbolicUser}${symbolicGroup}${symbolicOthers}`;
+            document.getElementById('symbolic-permissions').textContent = symbolicFull;
+
+            const descUser = getOctalDescription(userOctal);
+            const descGroup = getOctalDescription(groupOctal);
+            const descOthers = getOctalDescription(othersOctal);
+
+            let description = `El propietario tiene ${descUser}`;
+            if (groupOctal === othersOctal) {
+                description += `, el grupo y otros tienen ${descGroup}.`;
+            } else {
+                description += `, el grupo tiene ${descGroup} y otros tienen ${descOthers}.`;
+            }
+            document.getElementById('permission-description').textContent = description;
+
+           
+            permissionRadarChart.data.datasets[0].data = [(userOctal & 4) ? 1 : 0, (userOctal & 2) ? 1 : 0, (userOctal & 1) ? 1 : 0];
+            permissionRadarChart.data.datasets[1].data = [(groupOctal & 4) ? 1 : 0, (groupOctal & 2) ? 1 : 0, (groupOctal & 1) ? 1 : 0];
+            permissionRadarChart.data.datasets[2].data = [(othersOctal & 4) ? 1 : 0, (othersOctal & 2) ? 1 : 0, (othersOctal & 1) ? 1 : 0];
+            
+        
+            permissionRadarChart.data.datasets[0].label = `Usuario (${userOctal})`;
+            permissionRadarChart.data.datasets[1].label = `Grupo (${groupOctal})`;
+            permissionRadarChart.data.datasets[2].label = `Otros (${othersOctal})`;
+
+            permissionRadarChart.update();
+        }
+
+        const ctxPermissions = document.getElementById('permissionSetsChart').getContext('2d');
+        const permissionRadarChart = new Chart(ctxPermissions, {
+            type: 'radar',
+            data: {
+                labels: ['Lectura', 'Escritura', 'Ejecución'],
+                datasets: [
+                    {
+                        label: 'Usuario (7)', 
+                        data: [1, 1, 1], 
+                        fill: true,
+                        backgroundColor: 'rgba(0, 63, 92, 0.2)',
+                        borderColor: colorPalette.darkBlue,
+                        pointBackgroundColor: colorPalette.darkBlue,
+                    },
+                    {
+                        label: 'Grupo (5)',
+                        data: [1, 0, 1], 
+                        fill: true,
+                        backgroundColor: 'rgba(122, 81, 149, 0.2)',
+                        borderColor: colorPalette.purple,
+                        pointBackgroundColor: colorPalette.purple,
+                    },
+                    {
+                        label: 'Otros (5)', 
+                        data: [1, 0, 1], 
+                        fill: true,
+                        backgroundColor: 'rgba(239, 86, 117, 0.2)',
+                        borderColor: colorPalette.pink,
+                        pointBackgroundColor: colorPalette.pink,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Permisos Octales Dinámicos (r=4, w=2, x=1)',
+                        font: { size: 16, weight: 'bold' },
+                        color: colorPalette.darkBlue
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                           generateLabels: function(chart) {
+                                return chart.data.datasets.map((dataset, i) => {
+                                    return {
+                                        text: dataset.label,
+                                        fillStyle: dataset.backgroundColor,
+                                        strokeStyle: dataset.borderColor,
+                                        lineWidth: dataset.borderWidth,
+                                        hidden: !chart.isDatasetVisible(i),
+                                        datasetIndex: i
+                                    };
+                                });
+                            }
+                        }
+                    },
+                    tooltip: {
+                         callbacks: {
+                           title: (tooltipItems) => {
+                               return tooltipItems[0].dataset.label;
+                           },
+                           label: (tooltipItem) => {
+                               const label = tooltipItem.label;
+                               const value = tooltipItem.raw;
+                               return `${label}: ${value === 1 ? 'Concedido' : 'Denegado'}`;
+                           }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: false
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 1,
+                        ticks: {
+                           stepSize: 1,
+                           display: false 
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: colorPalette.darkBlue
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('calculate-permissions').addEventListener('click', updatePermissions);
+        updatePermissions();
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
